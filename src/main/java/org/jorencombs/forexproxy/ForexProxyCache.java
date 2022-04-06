@@ -69,14 +69,12 @@ public class ForexProxyCache {
                 });
                 Result result = new Result(future, System.currentTimeMillis());
                 cache.put(pair, result);
-                System.out.println("New future generated at " + String.valueOf(System.currentTimeMillis()));
             }
         }
         try {
             return cache.get(pair).future.get(5000, TimeUnit.MILLISECONDS);
         } catch (TimeoutException e) {
-            // Don't print timeouts... could get spammy.
-            // TODO: Log it somewhere
+            // Don't print timeouts... could get spammy
             return new ForexRate(from, to, "Timeout while waiting for quote");
         } catch (Exception e) {
             e.printStackTrace();

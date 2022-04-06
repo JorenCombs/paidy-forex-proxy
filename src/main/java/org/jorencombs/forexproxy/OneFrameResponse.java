@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Intended to be used for responses from the one-frame service.
- *
- * TODO: Timestamp handling for five-minute staleness limit
  */
 public class OneFrameResponse {
     /**
@@ -40,8 +38,6 @@ public class OneFrameResponse {
 
     /**
      * The timestamp these rates were obtained at
-     *
-     * TODO: Timestamp handling for five-minute staleness limit
      */
     @JsonProperty("time_stamp")
     String time_stamp;
