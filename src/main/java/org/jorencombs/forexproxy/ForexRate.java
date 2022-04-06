@@ -11,6 +11,12 @@ public class ForexRate {
         this.to = to;
     }
 
+    public ForexRate(String from, String to, String error) {
+        this.from = from;
+        this.to = to;
+        this.error = error;
+    }
+
     /**
      * Gets the currency being traded from
      *
@@ -57,8 +63,8 @@ public class ForexRate {
     }
 
     /**
-     * Gets the timestamp these rates are valid as of
-     * @return String - The timestamp, in YYYY-MM-DDThh:mm:ss.millisZ format
+     * Gets the timestamp these rates are valid as of, as determined by the market.
+     * @return String - The timestamp, in epoch time millis
      */
     public String getTimestamp() {
         return timestamp;
@@ -90,9 +96,12 @@ public class ForexRate {
     double price = 0;
 
     /**
-     * The timestamp these rates were obtained at
-     *
-     * TODO: Timestamp handling for five-minute staleness limit
+     * The timestamp these rates were generated, according to the one-frame API.
      */
-    String timestamp = String.valueOf(System.currentTimeMillis());
+    String timestamp = "";
+
+    /**
+     * Errors encountered while fulfilling this request should be set here
+     */
+    String error = "";
 }
