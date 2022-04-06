@@ -71,6 +71,13 @@ public class ForexRate {
     }
 
     /**
+     * Gets the error text, if any.  This should be used to log issues encountered fulfilling the request
+     */
+    public String getError() {
+        return error;
+    }
+
+    /**
      * The currency being traded from
      */
     String from;

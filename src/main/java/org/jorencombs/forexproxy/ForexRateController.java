@@ -28,9 +28,13 @@ public class ForexRateController {
     public ForexRate forexRate(@RequestParam(value = "from", defaultValue = "USD") String from, @RequestParam(value = "to", defaultValue = "JPY") String to) {
         String sanitizedFrom = Jsoup.clean(from, Safelist.simpleText()).toUpperCase(),
                 sanitizedTo = Jsoup.clean(to, Safelist.simpleText()).toUpperCase();
-        if (ForexProxyApplication.SUPPORTED_CURRENCIES.contains(sanitizedFrom) &&
-                ForexProxyApplication.SUPPORTED_CURRENCIES.contains(sanitizedTo)) {
-            return ForexProxyCache.getInstance().getForexRate(sanitizedFrom, sanitizedTo);
+        if (ForexProxyApplication.SUPPORTED_CURRENCIES.contains(sanitizedFrom)
+                && ForexProxyApplication.SUPPORTED_CURRENCIES.contains(sanitizedTo)) {
+            if (!sanitizedFrom.equals(sanitizedTo)) {
+                return ForexProxyCache.getInstance().getForexRate(sanitizedFrom, sanitizedTo);
+            } else {
+                return new ForexRate(sanitizedFrom, sanitizedTo, "From and to currencies cannot be the same");
+            }
         } else {
             return new ForexRate(sanitizedFrom, sanitizedTo,
                     "Both currencies must be one of the following: "
