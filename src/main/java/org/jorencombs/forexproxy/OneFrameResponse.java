@@ -19,19 +19,19 @@ public class OneFrameResponse {
     String to;
 
     /**
-     * The current bid price (by purchaser of {@link #to} currency, denominated in {@link #from} currency.
+     * The current bid price (by purchasers of the {@link #from}-{@link #to} currency pair, denominated in {@link #from} currency.)
      */
     @JsonProperty("bid")
     double bid;
 
     /**
-     * The current ask price (by seller of {@link #to} currency, denominated in {@link #from} currency.
+     * The current ask price (by sellers of the {@link #from}-{@link #to} currency pair, denominated in {@link #from} currency.)
      */
     @JsonProperty("ask")
     double ask;
 
     /**
-     * The current market price of {@link #to} currency, denominated in {@link #from} currency.
+     * The current market price of the currency pair, denominated in {@link #from} currency.
      */
     @JsonProperty("price")
     double price;

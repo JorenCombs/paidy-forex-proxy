@@ -5,13 +5,13 @@ package org.jorencombs.forexproxy;
  * For now, these mirror the values of {@link OneFrameResponse} but this is expected to change
  * to include e.g. potential error text, staleness indication, etc.\
  */
-public class ForexRate {
-    public ForexRate(String from, String to) {
+public class ForexRateQuote {
+    public ForexRateQuote(String from, String to) {
         this.from = from;
         this.to = to;
     }
 
-    public ForexRate(String from, String to, String error) {
+    public ForexRateQuote(String from, String to, String error) {
         this.from = from;
         this.to = to;
         this.error = error;
@@ -38,7 +38,7 @@ public class ForexRate {
     /**
      * Gets the current bid price.
      *
-     * @return Double - The bid price (by purchaser of {@link #getTo()} currency, denominated in terms of {@link #getFrom() the from currency}.
+     * @return Double - The bid price (by purchaser of {@link #from}-{@link #to} currency pair, denominated in terms of {@link #getFrom() the from currency}.
      */
     public double getBid() {
         return bid;
@@ -47,7 +47,7 @@ public class ForexRate {
     /**
      * Gets the current ask price.
      *
-     * @return Double - The ask price (by purchaser of {@link #getTo()} currency, denominated in terms of {@link #getFrom() the from currency}.
+     * @return Double - The ask price (by purchaser of {@link #from}-{@link #to} currency pair, denominated in terms of {@link #getFrom() the from currency}.
      */
     public double getAsk() {
         return ask;
@@ -56,7 +56,7 @@ public class ForexRate {
     /**
      * Gets the current market price.
      *
-     * @return Double - The market price (by purchaser of {@link #getTo()} currency, denominated in terms of {@link #getFrom() the from currency}.
+     * @return Double - The market price (by purchaser of {@link #from}-{@link #to} currency pair, denominated in terms of {@link #getFrom() the from currency}.
      */
     public double getPrice() {
         return price;
@@ -88,12 +88,12 @@ public class ForexRate {
     String to;
 
     /**
-     * The current bid price (by purchaser of {@link #to} currency, denominated in {@link #from} currency.
+     * The current bid price (by purchaser of {@link #from}-{@link #to} currency pair, denominated in {@link #from} currency.)
      */
     double bid = 0;
 
     /**
-     * The current ask price (by seller of {@link #to} currency, denominated in {@link #from} currency.
+     * The current ask price (by seller of {@link #from}-{@link #to} currency pair, denominated in {@link #from} currency.)
      */
     double ask = 0;
 

@@ -7,12 +7,12 @@ import java.util.concurrent.*;
 public class ForexProxyCache {
 
     private class Result {
-        public Result (Future<ForexRate> future, long timestamp) {
+        public Result (Future<ForexRateQuote> future, long timestamp) {
             this.future = future;
             this.timestamp = timestamp;
         }
 
-        Future<ForexRate> future;
+        Future<ForexRateQuote> future;
         long timestamp;
     }
 
@@ -42,13 +42,13 @@ public class ForexProxyCache {
 
     private ExecutorService executor = Executors.newFixedThreadPool(ForexProxyApplication.ONE_FRAME_THREADS);
 
-    public ForexRate getForexRate(final String from, final String to) {
+    public ForexRateQuote getForexRate(final String from, final String to) {
         String pair = from + to;
         synchronized(cache) {
             if (!cache.containsKey(pair)
                     || System.currentTimeMillis() - cache.get(pair).timestamp > ForexProxyApplication.STALENESS_LIMIT) {
-                Future<ForexRate> future = executor.submit(() -> {
-                    ForexRate forexRate = new ForexRate(from, to);
+                Future<ForexRateQuote> future = executor.submit(() -> {
+                    ForexRateQuote forexRateQuote = new ForexRateQuote(from, to);
                     WebClient webClient = WebClient.create();
                     OneFrameResponse[] response = webClient.get()
                             .uri("localhost:8080/rates?pair=" + from + to)
@@ -58,14 +58,14 @@ public class ForexProxyCache {
                             .block();
 
                     if (response != null && response.length > 0) {
-                        forexRate.from = String.valueOf(response[0].from);
-                        forexRate.to = String.valueOf(response[0].to);
-                        forexRate.ask = Double.valueOf(response[0].ask);
-                        forexRate.bid = Double.valueOf(response[0].bid);
-                        forexRate.price = Double.valueOf(response[0].price);
-                        forexRate.timestamp = String.valueOf(response[0].time_stamp);
+                        forexRateQuote.from = String.valueOf(response[0].from);
+                        forexRateQuote.to = String.valueOf(response[0].to);
+                        forexRateQuote.ask = Double.valueOf(response[0].ask);
+                        forexRateQuote.bid = Double.valueOf(response[0].bid);
+                        forexRateQuote.price = Double.valueOf(response[0].price);
+                        forexRateQuote.timestamp = String.valueOf(response[0].time_stamp);
                     }
-                    return forexRate;
+                    return forexRateQuote;
                 });
                 Result result = new Result(future, System.currentTimeMillis());
                 cache.put(pair, result);
@@ -75,10 +75,10 @@ public class ForexProxyCache {
             return cache.get(pair).future.get(5000, TimeUnit.MILLISECONDS);
         } catch (TimeoutException e) {
             // Don't print timeouts... could get spammy
-            return new ForexRate(from, to, "Timeout while waiting for quote");
+            return new ForexRateQuote(from, to, "Timeout while waiting for quote");
         } catch (Exception e) {
             e.printStackTrace();
-            return new ForexRate(from, to, "Interrupted while waiting for quote");
+            return new ForexRateQuote(from, to, "Interrupted while waiting for quote");
         }
     }
 }

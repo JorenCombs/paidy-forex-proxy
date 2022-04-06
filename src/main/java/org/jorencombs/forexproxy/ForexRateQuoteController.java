@@ -9,23 +9,21 @@ import org.jsoup.Jsoup;
 import java.util.Arrays;
 
 /**
- * Controls the /forex-rate path.  Responses will be {@link ForexRate} JSONs.
+ * Controls the /forex-rate path.  Responses will be {@link ForexRateQuote} JSONs.
  */
 
 @RestController
-public class ForexRateController {
-    private static final String template = "Rate: ";
-
+public class ForexRateQuoteController {
 
     @GetMapping("/forex-rate")
     /**
-     * Looks up current rates for trading from one currency to another.  Guaranteed to be accurate within five minutes.
+     * Looks up current rates for trading the specified currency pair.  Guaranteed to be accurate within five minutes.
      *
      * @param from - The currency being traded from.
      * @param to - The currency being traded to
-     * @return ForexRate - A JSON object with the returned rate.
+     * @return ForexRateQuote - A JSON object with the returned rate.
      */
-    public ForexRate forexRate(@RequestParam(value = "from", defaultValue = "USD") String from, @RequestParam(value = "to", defaultValue = "JPY") String to) {
+    public ForexRateQuote forexRate(@RequestParam(value = "from", defaultValue = "USD") String from, @RequestParam(value = "to", defaultValue = "JPY") String to) {
         String sanitizedFrom = Jsoup.clean(from, Safelist.simpleText()).toUpperCase(),
                 sanitizedTo = Jsoup.clean(to, Safelist.simpleText()).toUpperCase();
         if (ForexProxyApplication.SUPPORTED_CURRENCIES.contains(sanitizedFrom)
@@ -33,10 +31,10 @@ public class ForexRateController {
             if (!sanitizedFrom.equals(sanitizedTo)) {
                 return ForexProxyCache.getInstance().getForexRate(sanitizedFrom, sanitizedTo);
             } else {
-                return new ForexRate(sanitizedFrom, sanitizedTo, "From and to currencies cannot be the same");
+                return new ForexRateQuote(sanitizedFrom, sanitizedTo, "From and to currencies cannot be the same");
             }
         } else {
-            return new ForexRate(sanitizedFrom, sanitizedTo,
+            return new ForexRateQuote(sanitizedFrom, sanitizedTo,
                     "Both currencies must be one of the following: "
                             + Arrays.toString(ForexProxyApplication.SUPPORTED_CURRENCIES.toArray()));
         }
