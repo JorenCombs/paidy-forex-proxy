@@ -88,7 +88,7 @@ something goes wrong.”
 
 # Possible approaches considered
 
-  For now, as this is a minimum viable product meant to be run locally, this can be modeled with a single instance.  We will not consider issues such as load balancing or global distribution for now, HOWEVER, we should still model or at least plan for a failover approach to ensure reliability.
+  For now, as this is a minimum viable product meant to be run locally, this can be modeled with a single instance.  We will not consider issues such as load balancing or global distribution for now, HOWEVER, we should still model or at least plan for a failover approach to ensure reliability.  (Issue #5)
 To avoid loading the API, we should maintain a cache of queried currency pairs and results which should be periodically refreshed within 5 minutes as long as they qualify for the cache.  Let’s explore some approaches:
 
 1.	Keep all pairs in the cache at all times, refreshing every five minutes.
@@ -100,14 +100,17 @@ To avoid loading the API, we should maintain a cache of queried currency pairs a
 	- We can expire cache entries immediately after 5 minutes and update as soon as another query comes in.  As a MVP that needs to conserve query bandwidth, this is the safest approach.  A drawback of not aggressively adding pairs to the cache before they get queried is that we lose the ability to gap intermittent outages < 5 minutes long if the one-frame service suffers from availability problems.  This is an acceptable risk given the API limitations and loading requirements above.
 	- Or, we could maintain pairs for longer than five minutes up to some period of X minutes.  This adds the risk of increasing the number of queries simply to refresh data that doesn’t get used, but may be useful in maintaining a value in cases where an intermittent outage occurs that resolves within five minutes.  For the purpose of creating an MVP that prioritizes not burdening the one-frame service, we will choose the former approach (expire cache entries after five minutes).
 
-We should make this approach dynamic and easy to adjust (don’t hard code the minutes, currencies, etc, but have them read from a configuration file)
+We should make this approach dynamic and easy to adjust (don’t hard code the minutes, currencies, etc, but have them read from a configuration file. (Issue #3)  Currently there are final variables in the Application class that can be adjusted, but these should be moved to a configuration file.
 
 # Assumptions made
 
 1.	The requirement that results not be older than five minutes can be considered ambiguous.  What if there is a time discrepancy between the local instance and the remote service's timestamp?  In the end, rather than using the one-frame API's timestamp, it seemed most performant to track the timestamp of results locally to enforce that results be no more than five minutes past the time the one-frame API was last queried for that pair.  However, we will provide the user with the timestamp given by the one-frame API, since that would be considered authoritative as part of the market quote.  This avoids providing the consuming service a timestamp that differs significantly from the market's clock.
 2.	Although not specified in the task description, I assumed that services would want to know all of the information provided by the one-frame API (bid, ask, timestamp, in addition to price) as a solution failing to provide all of that would not be feature-complete from an investor perspective.
+3.	I'm assuming that we do not need to sanitize output from the one-frame API.  I do however attempt to sanitize consumer-provided parameters.
 	    
 # Testing scenarios to consider
+
+Test automation is not currently part of the build (Issue #4)
 
 1.	Pessimistic.  We engineer queries round-robinning the currencies and hitting them at least five minutes after the previous query for that pair.  This will hit them after the staleness requirement and try to max out the daily query limit for the one-frame API.  I expect given the chosen design decisions above this WILL trigger the per-day limit of one-frame, leading to the extended one-frame unavailability scenario.
 2.	Atypical queries (e.g. JPY-JPY exchange rate, this can be considered a legitimate query that should return an exchange rate of “1”), non-supported currency pairs, empty pair parameters, etc.
