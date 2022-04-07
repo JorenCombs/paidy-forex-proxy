@@ -12,9 +12,14 @@ import java.util.Set;
 public class ForexProxyApplication {
 
 	/**
-	 * How many threads to use for one frame queries.
+	 * How many threads to use for one-frame queries.
 	 */
 	public final static int ONE_FRAME_THREADS = 10;
+
+	/**
+	 * Timeout for one-frame queries
+	 */
+	public final static int ONE_FRAME_TIMEOUT = 5000;
 
 	/**
 	 * How long to hold on to the last rate quote before requerying the one-frame API.
@@ -23,8 +28,8 @@ public class ForexProxyApplication {
 	public final static int STALENESS_LIMIT = 300000; // Five minutes
 
 	/**
-	 * How long to hold on to the last rate quote error text before requerying the one-frame API.
-	 * This is in milliseconds (10000 = ten seconds)
+	 * How long to hold on to the last rate quote before requerying the one-frame API
+	 * if an error occurs.  This is in milliseconds (10000 = ten seconds)
 	 */
 	public final static int ERROR_STALENESS_LIMIT = 10000; // Ten seconds
 
