@@ -29,7 +29,7 @@ public class ForexRateQuoteController {
      * have error text describing why the request could not be fulfilled.  The to/from currencies
      * will remain as supplied by the user.
      */
-    public ForexRateQuote forexRate(@RequestParam(value = "from", defaultValue = "USD") String from, @RequestParam(value = "to", defaultValue = "JPY") String to) {
+    public ForexRateQuote forexRate(@RequestParam(value = "from", defaultValue = "") String from, @RequestParam(value = "to", defaultValue = "") String to) {
         String sanitizedFrom = Jsoup.clean(from, Safelist.simpleText()).toUpperCase(),
                 sanitizedTo = Jsoup.clean(to, Safelist.simpleText()).toUpperCase();
         if (ForexProxyApplication.SUPPORTED_CURRENCIES.contains(sanitizedFrom)
@@ -37,11 +37,11 @@ public class ForexRateQuoteController {
             if (!sanitizedFrom.equals(sanitizedTo)) {
                 return ForexProxyCache.getInstance().getForexRate(sanitizedFrom, sanitizedTo);
             } else {
-                return new ForexRateQuote(sanitizedFrom, sanitizedTo, "From and to currencies cannot be the same");
+                return new ForexRateQuote(sanitizedFrom, sanitizedTo, "Currencies specified in 'from' and 'to' parameters cannot be the same");
             }
         } else {
             return new ForexRateQuote(sanitizedFrom, sanitizedTo,
-                    "Both currencies must be one of the following: "
+                    "currencies specified in 'from' and 'to' parameters must be one of the following: "
                             + Arrays.toString(ForexProxyApplication.SUPPORTED_CURRENCIES.toArray()));
         }
     }
