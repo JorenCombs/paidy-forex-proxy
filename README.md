@@ -19,6 +19,12 @@ To start the service, use
 To stop the service, use
 
 	mvn spring-boot:stop
+	
+## Configuration
+
+Server port can be changed by editing src/main/resources/application.properties, changing the below line, and recompiling:
+
+	server.port=8081
 
 # API
 
