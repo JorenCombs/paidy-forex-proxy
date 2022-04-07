@@ -23,6 +23,13 @@ public class ForexProxyApplication {
 	public final static int STALENESS_LIMIT = 300000; // Five minutes
 
 	/**
+	 * How long to hold on to the last rate quote error text before requerying the one-frame API.
+	 * This is in milliseconds (10000 = ten seconds)
+	 */
+	public final static int ERROR_STALENESS_LIMIT = 10000; // Ten seconds
+
+
+	/**
 	 * The list of supported currencies.  Must be all-caps, or queries for that currency
 	 * will not be recognized.  Queries for currencies not in this list will be rejected.
 	 */
