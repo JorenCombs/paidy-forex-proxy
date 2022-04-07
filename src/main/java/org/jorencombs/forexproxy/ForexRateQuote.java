@@ -2,8 +2,7 @@ package org.jorencombs.forexproxy;
 
 /**
  * Used for responses to queries of our forex-proxy service.
- * For now, these mirror the values of {@link OneFrameResponse} but this is expected to change
- * to include e.g. potential error text, staleness indication, etc.\
+ * These mostly mirror the values of {@link OneFrameResponse} but also includes a text field for errors.\
  */
 public class ForexRateQuote {
     public ForexRateQuote(String from, String to) {

@@ -17,11 +17,17 @@ public class ForexRateQuoteController {
 
     @GetMapping("/forex-rate")
     /**
-     * Looks up current rates for trading the specified currency pair.  Guaranteed to be accurate within five minutes.
+     * Looks up current rates for trading the specified currency pair.  Guaranteed to be accurate within
+     * {@link ForexProxyApplication#STALENESS_LIMIT}
      *
-     * @param from - The currency being traded from.
-     * @param to - The currency being traded to
-     * @return ForexRateQuote - A JSON object with the returned rate.
+     * @param from - The currency being traded from.  This is not case sensitive.  Must be in
+     *      {@link ForexProxyApplication#SUPPORTED_CURRENCIES} or an error will be returned.
+     * @param to - The currency being traded to.  This is not case sensitive.  Must be in
+     *      {@link ForexProxyApplication#SUPPORTED_CURRENCIES} or an error will be returned.
+     * @return ForexRateQuote - A JSON object with the returned rate.  In the event of an error,
+     * a ForexRateQuote object will be returned that has bid, ask, and price of zero and will
+     * have error text describing why the request could not be fulfilled.  The to/from currencies
+     * will remain as supplied by the user.
      */
     public ForexRateQuote forexRate(@RequestParam(value = "from", defaultValue = "USD") String from, @RequestParam(value = "to", defaultValue = "JPY") String to) {
         String sanitizedFrom = Jsoup.clean(from, Safelist.simpleText()).toUpperCase(),

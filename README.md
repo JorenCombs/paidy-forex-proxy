@@ -26,6 +26,14 @@ The service can be accessed via URLs formatted like the following:
 
 http://HOSTNAME:PORT/forex-rate?from=CURRENCY&to=CURRENCY
 
+**from**:		The currency being traded from.  This is not case sensitive.  Must be in
+the supported currencies list or an error will be returned.
+
+**to**:		The currency being traded to.  This is not case sensitive.  Must be in
+the supported currencies list or an error will be returned.
+
+Supported currencies are:  AUD, CAD, CHF, EUR, GBP, NZD, JPY, SGD, USD
+
 For example, assuming the service is available on 8081 locally, the following URL will provide rates for exchanging Japanese yen to Australian dollars:
 
 http://localhost:8081/forex-rate?from=JPY&to=AUD
